@@ -401,10 +401,10 @@ private:
   //       Two elements A and B are equivalent if and only if A is
   //       not less than B and B is not less than A.
   static Node * find_impl(Node *node, const T &query, Compare less) {
-    if(node==null) 
-      return NULL;
+    if(node==nullptr) 
+      return nullptr;
 		if(!less(node->data,query) && !less(query, node->data))  //node->data==query
-      return t;
+      return node;
 		else if( less(query, node->data) )  //node->data > query
       return find_impl(node->left, query, less);
 		else 
