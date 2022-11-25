@@ -331,7 +331,7 @@ private:
   // NOTE:    This function must run in constant time.
   //          No iteration or recursion is allowed.
   static bool empty_impl(const Node *node) {
-    return(!root);
+    return(!node);
   }
 
   // EFFECTS: Returns the size of the tree rooted at 'node', which is the
@@ -350,7 +350,7 @@ private:
   //          The height of an empty tree is 0.
   // NOTE:    This function must be tree recursive.
   static int height_impl(const Node *node) {
-    if(empty_impl(root)) return 0;
+    if(empty_impl(node)) return 0;
     if(node==nullptr){
       return 0;
     }
@@ -365,17 +365,17 @@ private:
     if(node == nullptr){
       return 0;
     }
-    root->data = node->data;
-    root->right = copy_nodes_impl(node->right);
-    root->left = copy_nodes_impl(node->left);
-    return root;
+    node->datum = node->datum;
+    node->right = copy_nodes_impl(node->right);
+    node->left = copy_nodes_impl(node->left);
+    return node;
   }
 
   // EFFECTS: Frees the memory for all nodes used in the tree rooted at 'node'.
   // NOTE:    This function must be tree recursive.
   static void destroy_nodes_impl(Node *node) {
     if(node == nullptr){
-      return 0;
+      return;
     }
     if(node->left != nullptr){
       destroy_nodes_impl(node->left);
@@ -403,9 +403,9 @@ private:
   static Node * find_impl(Node *node, const T &query, Compare less) {
     if(node==nullptr) 
       return nullptr;
-		if(!less(node->data,query) && !less(query, node->data))  //node->data==query
+		if(!less(node->datum,query) && !less(query, node->datum))  //node->data==query
       return node;
-		else if( less(query, node->data) )  //node->data > query
+		else if( less(query, node->datum) )  //node->data > query
       return find_impl(node->left, query, less);
 		else 
 			return find_impl(node->right, query, less);
@@ -429,15 +429,15 @@ private:
   static Node * insert_impl(Node *node, const T &item, Compare less) {
     Node *p;
     if(node==nullptr){
-      root->data = item;
-      root->left = nullptr;
-      root->right = nullptr;
+      node->datum = item;
+      node->left = nullptr;
+      node->right = nullptr;
       return p;
     }
-    if(less(item,node->data)){
+    if(less(item,node->datum)){
       node->left=insert_impl(node->left,item,less);
     }
-    else if(!less(item,node->data)){
+    else if(!less(item,node->datum)){
       node->right=insert_impl(node->right,item,less);
     }
     return p;
@@ -487,10 +487,10 @@ private:
     if(node == nullptr){
       return true; //if empty tree, it holds
     }
-    if(node->left != nullptr && less(max_element_imp(node->left),node->data)){
+    if(node->left != nullptr && less(max_element_imp(node->left),node->datum)){
       return true; //if left subtree exists and the max in left subtree is less than root
     }
-    if(node->right != nullptr && !less(max_element_imp(node->right),node->data)){
+    if(node->right != nullptr && !less(max_element_imp(node->right),node->datum)){
       return true; //if left subtree exists and the max in left subtree is more than root
     }
     if(check_sorting_invariant_impl(node->left) || check_sorting_invariant_impl(node->right)){
