@@ -462,6 +462,8 @@ private:
     if(node->left != nullptr){
       return min_element_impl(node->left);
     }
+    assert(false); //should never get here
+    return nullptr;
   }
 
   // EFFECTS : Returns a pointer to the Node containing the maximum element
@@ -479,6 +481,8 @@ private:
     if(node->right != nullptr){
       return max_element_impl(node->right);
     }
+    assert(false); //should never get here
+    return nullptr;
   }
 
 
