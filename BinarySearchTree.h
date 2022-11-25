@@ -19,6 +19,7 @@
 #include <cassert>  //assert
 #include <iostream> //ostream
 #include <functional> //less
+#include <algorithm> //max
 
 // You may add aditional libraries here if needed. You may use any
 // part of the STL except for containers.
@@ -427,11 +428,11 @@ private:
   //       template, NOT according to the < operator. Use the "less"
   //       parameter to compare elements.
   static Node * insert_impl(Node *node, const T &item, Compare less) {
-    Node *p;
+    Node *p = nullptr;
     if(node==nullptr){
-      node->datum = item;
-      node->left = nullptr;
-      node->right = nullptr;
+      p->datum = item;
+      p->left = nullptr;
+      p->right = nullptr;
       return p;
     }
     if(less(item,node->datum)){
@@ -487,10 +488,10 @@ private:
     if(node == nullptr){
       return true; //if empty tree, it holds
     }
-    if(node->left != nullptr && less(max_element_imp(node->left),node->datum)){
+    if(node->left != nullptr && less(max_element_impl(node->left),node->datum)){
       return true; //if left subtree exists and the max in left subtree is less than root
     }
-    if(node->right != nullptr && !less(max_element_imp(node->right),node->datum)){
+    if(node->right != nullptr && !less(max_element_impl(node->right),node->datum)){
       return true; //if left subtree exists and the max in left subtree is more than root
     }
     if(check_sorting_invariant_impl(node->left) || check_sorting_invariant_impl(node->right)){
