@@ -20,6 +20,7 @@
 #include <iostream> //ostream
 #include <functional> //less
 #include <algorithm> //max
+using namespace std;
 
 // You may add aditional libraries here if needed. You may use any
 // part of the STL except for containers.
@@ -488,13 +489,13 @@ private:
     if(node == nullptr){
       return true; //if empty tree, it holds
     }
-    if(node->left != nullptr && less(max_element_impl(node->left),node->datum)){
+    if(node->left != nullptr && less(max_element_impl(node->left)->datum,node->datum)){
       return true; //if left subtree exists and the max in left subtree is less than root
     }
-    if(node->right != nullptr && !less(max_element_impl(node->right),node->datum)){
+    if(node->right != nullptr && !less(max_element_impl(node->right)->datum,node->datum)){
       return true; //if left subtree exists and the max in left subtree is more than root
     }
-    if(check_sorting_invariant_impl(node->left) || check_sorting_invariant_impl(node->right)){
+    if(check_sorting_invariant_impl(node->left,less) || check_sorting_invariant_impl(node->right,less)){
       return false; //if left or right subtree do not obey invariant then false
     }
     else{
@@ -546,10 +547,10 @@ private:
   //       'less' parameter). Based on the result, you gain some information
   //       about where the element you're looking for could be.
   static Node * min_greater_than_impl(Node *node, const T &val, Compare less) {
-    if(less(max_element_impl(node),val)){
+    if(less(max_element_impl(node)->datum,val)){
       return nullptr;
     }
-    if(!less(max_element_impl(node->left),val)){
+    if(!less(max_element_impl(node->left)->datum,val)){
       min_greater_than_impl(node->left, val, less);
     }
     else if(!less(val,node->datum)){
