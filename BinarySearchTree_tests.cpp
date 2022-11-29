@@ -118,4 +118,30 @@ TEST(test_min_greater_than_impl){
     //ASSERT_EQUAL(i.min_greater_than(9), i.end());
 }
 
+TEST(test_star){
+    BinarySearchTree<int> i;
+    BinarySearchTree<int>::Iterator itr = i.begin();
+    i.insert(7);
+    i.insert(9);
+    i.insert(134);
+    i.insert(55);
+    i.insert(3);
+    itr = i.begin();
+
+    ASSERT_TRUE(*itr == 3);
+}
+
+TEST(test_plus_pre){
+    BinarySearchTree<int> i;
+    BinarySearchTree<int>::Iterator itr = i.begin();
+    i.insert(4);
+    i.insert(8);
+    i.insert(12);
+    i.insert(2);
+    i.insert(6);
+    itr = i.begin();
+
+    ASSERT_TRUE(++*itr == 4);
+}
+
 TEST_MAIN()
