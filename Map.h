@@ -33,11 +33,9 @@ private:
 
   // A custom comparator
   class PairComp {
-    private:
-      //instance of paircompare
     public:
-      bool operator()(pair1, pair2) const{
-        return //instance of Key_compare(pair1 key, pair2 key)
+      bool operator()(Pair_type pair1, Pair_type pair2) const{
+        return pair1.first < pair2.first;
       }
   };
 
@@ -68,11 +66,15 @@ public:
 
 
   // EFFECTS : Returns whether this Map is empty.
-  bool empty() const;
+  bool empty() const{
+    return BinarySearchTree::empty();
+  }
 
   // EFFECTS : Returns the number of elements in this Map.
   // NOTE : size_t is an integral type from the STL
-  size_t size() const;
+  size_t size() const{
+    return BinarySearchTree::size();
+  }
 
   // EFFECTS : Searches this Map for an element with a key equivalent
   //           to k and returns an Iterator to the associated value if found,
@@ -131,5 +133,6 @@ private:
 //    typename Map<K, V, C>::Iterator Map<K, V, C>::begin() const {
 //      // YOUR IMPLEMENTATION GOES HERE
 //    }
+
 
 #endif // DO NOT REMOVE!!!
