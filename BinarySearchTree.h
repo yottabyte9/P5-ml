@@ -549,6 +549,24 @@ private:
   //       'less' parameter). Based on the result, you gain some information
   //       about where the element you're looking for could be.
   static Node * min_greater_than_impl(Node *node, const T &val, Compare less) {
+    // If leaf node reached and is smaller than N
+    if (node->left == nullptr && node->right == nullptr && node->datum < val)
+        return nullptr;
+ 
+    // If node's value is greater than N and left value
+    // is NULL or smaller then return the node value
+    if ((node->datum >= val && node == nullptr) || (node->datum >= val && node->left->datum < val))
+        return node;
+ 
+    // if node value is smaller than N search in the
+    // right subtree
+    if (node->right!=nullptr && node->datum <= val)
+        return min_greater_than_impl(node->right, val,less);
+ 
+    // if node value is greater than N search in the
+    // left subtree
+    else if(node->left!=nullptr)
+        return min_greater_than_impl(node->left, val,less);
     return nullptr;
   }
 
