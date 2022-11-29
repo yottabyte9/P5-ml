@@ -549,6 +549,9 @@ private:
   //       'less' parameter). Based on the result, you gain some information
   //       about where the element you're looking for could be.
   static Node * min_greater_than_impl(Node *node, const T &val, Compare less) {    
+    if(node == nullptr){
+      return nullptr;//if the tree is empty then return nullptr
+    }
     if (node->left == nullptr && node->right == nullptr && !less(val, node->datum)){ 
         return nullptr; //if finished the whole thing and there is no answer, return nullptr
     }
