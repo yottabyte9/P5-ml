@@ -29,6 +29,7 @@ template <typename T,
           typename Compare=std::less<T> // default if argument isn't provided
          >
 class BinarySearchTree {
+  friend class Iterator;
 
   // OVERVIEW: This class represents a binary search tree, storing
   // elements of type T. The Compare functor determines the ordering
@@ -156,7 +157,7 @@ public:
     //           by the sorted ordering of the BinarySearchTree.
 
     // Big Three for Iterator not needed
-
+    friend class BinarySearchTree;
   public:
     Iterator()
       : root(nullptr), current_node(nullptr) {}
@@ -429,20 +430,17 @@ private:
   //       template, NOT according to the < operator. Use the "less"
   //       parameter to compare elements.
   static Node * insert_impl(Node *node, const T &item, Compare less) {
-    Node *p = nullptr;
     if(node==nullptr){
-      p->datum = item;
-      p->left = nullptr;
-      p->right = nullptr;
-      return p;
+      Node *n = new Node(item, nullptr, nullptr);
+      return n;
     }
-    if(less(item,node->datum)){
+    if(less(item,node->datum)){ //item<node->datum
       node->left=insert_impl(node->left,item,less);
     }
     else if(!less(item,node->datum)){
       node->right=insert_impl(node->right,item,less);
     }
-    return p;
+    return node;
   }
 
   // EFFECTS : Returns a pointer to the Node containing the minimum element
@@ -534,9 +532,9 @@ private:
     if(node == nullptr){
       return;
     }
+    os << node->datum << " ";
     traverse_inorder_impl(node->left,os);
     traverse_inorder_impl(node->right,os);
-    os << node->datum << " ";
   }
 
   // EFFECTS : Returns a pointer to the Node containing the smallest element
@@ -551,16 +549,7 @@ private:
   //       'less' parameter). Based on the result, you gain some information
   //       about where the element you're looking for could be.
   static Node * min_greater_than_impl(Node *node, const T &val, Compare less) {
-    if(less(max_element_impl(node)->datum,val)){
-      return nullptr;
-    }
-    if(!less(max_element_impl(node->left)->datum,val)){
-      min_greater_than_impl(node->left, val, less);
-    }
-    else if(!less(val,node->datum)){
-      min_greater_than_impl(node->right, val, less);
-    }
-    return node;
+    return nullptr;
   }
 
 
