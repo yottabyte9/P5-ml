@@ -82,9 +82,19 @@ BinarySearchTree<int> i;
 
 TEST(test_find){
     BinarySearchTree<int> i;
+    ASSERT_EQUAL(i.find(7),i.end());
     i.insert(7);
     ASSERT_TRUE(i.find(7) != i.end());
     ASSERT_TRUE(i.find(77) == i.end());
+    i.insert(5);
+    i.insert(3);
+    i.insert(6);
+    i.insert(10);
+    i.insert(8);
+    ASSERT_TRUE(*i.find(8)==8);
+    ASSERT_TRUE(*i.find(10)==10);
+    ASSERT_TRUE(*i.find(6)==6);
+    ASSERT_TRUE(*i.find(3)==3);
 }
 
 TEST(test_min_greater_than_impl){
@@ -96,6 +106,8 @@ TEST(test_min_greater_than_impl){
     i.insert(2);
     i.insert(1);
     i.insert(3);
+    cout << "min_greater_than_test" << endl;
+    cout << *i.min_greater_than(1);
     ASSERT_EQUAL(*i.min_greater_than(1), 2);
     ASSERT_EQUAL(*i.min_greater_than(2), 3);
     ASSERT_EQUAL(*i.min_greater_than(3), 4);
@@ -103,7 +115,7 @@ TEST(test_min_greater_than_impl){
     ASSERT_EQUAL(*i.min_greater_than(5), 7);
     ASSERT_EQUAL(*i.min_greater_than(7), 8);
     ASSERT_EQUAL(*i.min_greater_than(7), 9);
-    //ASSERT_TRUE(i.min_greater_than(9) == nullptr);
+    //ASSERT_EQUAL(i.min_greater_than(9), i.end());
 }
 
 TEST_MAIN()
