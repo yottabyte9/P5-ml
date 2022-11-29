@@ -549,19 +549,19 @@ private:
   //       'less' parameter). Based on the result, you gain some information
   //       about where the element you're looking for could be.
   static Node * min_greater_than_impl(Node *node, const T &val, Compare less) {    
-    if (node->left == nullptr && node->right == nullptr && node->datum <= val)
-        return nullptr;
- 
-    if ((node->datum > val && node->left == nullptr) || (node->datum > val && max_element_impl(node->left)->datum <= val))
-        return node;
-
-    if (node->right!=nullptr && node->datum <= val)
-        return min_greater_than_impl(node->right, val,less);
- 
-    else if(node->left!=nullptr)
-        return min_greater_than_impl(node->left, val,less);
-    
-    return nullptr;
+    if (node->left == nullptr && node->right == nullptr && !less(val, node->datum)){ 
+        return nullptr; //if finished the whole thing and there is no answer, return nullptr
+    }
+    if ((node->datum > val && node->left == nullptr) || (node->datum > val && !less(val, max_element_impl(node->left)->datum))){
+        return node; //if current node is good and there is nothing on the left to look at, return current node
+    }
+    if (node->right!=nullptr && !less(val, node->datum)){
+        return min_greater_than_impl(node->right, val,less); //if node <= val, then go right for bigger number
+    }
+    else if(node->left!=nullptr){
+        return min_greater_than_impl(node->left, val,less); //go left
+    }
+    return nullptr; //to satisfy compiler
   }
 
 
