@@ -58,10 +58,15 @@ TEST(test_insert) {
     BinarySearchTree<int> i;
     i.insert(2);
     ASSERT_FALSE(i.empty());
+    i.insert(3);//insert right
+    i.insert(1);//insert left
+    ASSERT_TRUE(i.size()==3);
+    ASSERT_TRUE(i.height()==2);
 }
 
 TEST(test_size){
     BinarySearchTree<int> i;
+    ASSERT_EQUAL(i.size(), 0);
     i.insert(1);
     i.insert(7);
     i.insert(5);
@@ -70,15 +75,45 @@ TEST(test_size){
 
 TEST(test_size_zero) {
     BinarySearchTree<int> i;
-    ASSERT_EQUAL(i.size(), 0u);
+    ASSERT_EQUAL(i.size(), 0);
 }
 
 TEST(test_height){
-BinarySearchTree<int> i;
+    BinarySearchTree<int> i;
+    ASSERT_EQUAL(i.height(), 0);
     i.insert(1);
     i.insert(7);
     i.insert(5);
-    ASSERT_EQUAL(i.height(), 3u);
+    ASSERT_EQUAL(i.height(), 3);
+}
+
+TEST(test_constructor){
+    BinarySearchTree<int> i;
+    i.insert(10);
+    i.insert(5);
+    i.insert(2);
+    i.insert(8);
+    i.insert(9);
+    i.insert(15);
+    BinarySearchTree<int> j = i;
+    ASSERT_FALSE(i.begin()==j.begin());
+    ASSERT_TRUE(i.begin()!=j.begin());
+    BinarySearchTree<int>::Iterator itr_i = i.begin();
+    ASSERT_EQUAL(j.min_greater_than(20), j.end());
+    ASSERT_EQUAL(*j.min_greater_than(7), 8);
+    ASSERT_EQUAL(j.height(), 4);
+    ASSERT_EQUAL(j.size(), 6);
+    ++*itr_i;
+    ASSERT_EQUAL(*i.min_element(), 3);
+    ASSERT_EQUAL(*j.min_element(), 2); //deep copy
+    itr_i++;
+    --*itr_i; 
+    ASSERT_EQUAL(i.find(5), i.end());
+    ASSERT_EQUAL(*i.find(4), 4);
+    ASSERT_EQUAL(j.find(6), j.end()); //deep copy
+    j = i;
+    ASSERT_EQUAL(*j.find(4), 4); //assignment
+    ASSERT_EQUAL(j.find(5), j.end());
 }
 
 TEST(test_find){
@@ -160,5 +195,16 @@ TEST(test_plus_pre){
 
     ASSERT_TRUE(++*itr == 3);
 }
+/*
+TEST(test_breaking){
+    BinarySearchTree<int> i;
+    i.insert(3);
+    i.insert(2);
+    BinarySearchTree<int>::Iterator itr = i.begin();
+    ++*itr;
+    ASSERT_EQUAL(*itr, 3);
+    cout << i.to_string() << endl; 
+
+}*/
 
 TEST_MAIN()
