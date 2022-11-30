@@ -353,7 +353,6 @@ private:
   //          The height of an empty tree is 0.
   // NOTE:    This function must be tree recursive.
   static int height_impl(const Node *node) {
-    if(empty_impl(node)) return 0;
     if(node==nullptr){
       return 0;
     }
@@ -366,12 +365,9 @@ private:
   // NOTE:    This function must be tree recursive.
   static Node *copy_nodes_impl(Node *node) {
     if(node == nullptr){
-      return 0;
+      return nullptr;
     }
-    node->datum = node->datum;
-    node->right = copy_nodes_impl(node->right);
-    node->left = copy_nodes_impl(node->left);
-    return node;
+    return new Node(node->datum, copy_nodes_impl(node->left), copy_nodes_impl(node->right));
   }
 
   // EFFECTS: Frees the memory for all nodes used in the tree rooted at 'node'.
