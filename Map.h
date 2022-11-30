@@ -86,8 +86,8 @@ public:
   //       (key, value) pairs, you'll need to construct a dummy value
   //       using "Value_type()".
   Iterator find(const Key_type& k) const{
-    Pair_type() j;
-    
+    Pair_type pair = {k, Value_type()};
+    return elements.find(pair);
   }
 
   // MODIFIES: this
