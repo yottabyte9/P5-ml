@@ -107,7 +107,7 @@ public:
   //
   // HINT: http://www.cplusplus.com/reference/map/map/operator[]/
   Value_type& operator[](const Key_type& k){
-    {k, Value_type()};
+    //{k, Value_type()};
   }
 
   // MODIFIES: this
