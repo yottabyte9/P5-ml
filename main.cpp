@@ -24,12 +24,17 @@ class Classifier{
             map<string, string> row;
             csvstream csvin(training_name, ',', true);
             while(csvin >> row){
-            string tag =  row["tag"];
-            string content = row["content"];
-
+                string tag =  row["tag"];
+                string content = row["content"];
+                /*
+                if (tag is not in map()
+                    label_freq_in_set.insert(tag, 1);
+                if (tag is already in map)
+                    tag++
+                */
+               
+            }
         }
-        
-    }
         //functions for 
     private:
         string training_name;
@@ -39,8 +44,7 @@ class Classifier{
         int total_num_posts_in_set; //#1
         int vocab_size; //#2
         map<string, int> label_freq_in_set; //#4
-        map<pair<string, string>, int> num_posts_label_contain_word;
-        
+        map<pair<string, string>, int> num_posts_label_contain_word; //#5 
 };
 
 set<string> unique_words(const string &str) {
@@ -64,7 +68,7 @@ int main(int argc, char **argv) {
 
     while(csvin >> row){
         string tag =  row["tag"];
-        string content = row["content"]
+        string content = row["content"];
     }
 
 
