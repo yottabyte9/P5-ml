@@ -26,23 +26,39 @@ class Classifier{
             while(csvin >> row){
                 string tag =  row["tag"];
                 string content = row["content"];
-                /*
-                if (tag is not in map()
-                    label_freq_in_set.insert(tag, 1);
-                if (tag is already in map)
-                    tag++
-                */
-               
+                //number 1
+                total_num_posts_in_set++;
+                //number 3
+                if(word_freq_in_set.find(tag) == word_freq_in_set.end())//if word is not in the set
+                    word_freq_in_set.insert(make_pair(tag,1));
+                else{
+                    word_freq_in_set.find(tag)->second++; //if word is already in map
+                }
+                //number 4
+                if (label_freq_in_set.find(tag) == label_freq_in_set.end())//if label is not in set
+                    label_freq_in_set.insert(make_pair(tag, 1));
+                else{
+                    label_freq_in_set.find(tag)->second++;
+                }
+                //number 5
+                set<string> temp_set_string = unique_words(content);
+                for( string unique_string_in_post: temp_set_string ){
+                    if(num_posts_label_contain_word.find(make_pair(tag,unique_string_in_post)) == num_posts_label_contain_word.end()){
+                        num_posts_label_contain_word.insert(make_pair((make_pair(tag, unique_string_in_post)),1));
+                    }
+                    else{
+                        num_posts_label_contain_word.find(make_pair(tag,unique_string_in_post))->second++;
+                    }
+                }
             }
         }
-        //functions for 
     private:
         string training_name;
         string testing_name;
         bool debug_in;
         map<string, int> word_freq_in_set; //#3
         int total_num_posts_in_set; //#1
-        int vocab_size; //#2
+        int vocab_size = word_freq_in_set.size(); //#2
         map<string, int> label_freq_in_set; //#4
         map<pair<string, string>, int> num_posts_label_contain_word; //#5 
 };
