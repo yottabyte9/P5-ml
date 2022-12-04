@@ -51,7 +51,21 @@ class Classifier{
                     }
                 }
             }
+      void debug_functions(bool debug_in){
+        map<string, string> row;
+        if (debug_in = true) {
+            std::cout << "training data:" << endl;
         }
+        if (debug_in = true){
+             std::cout << "  label = " << row["tag"] << ", content = " << row["content"] << endl;
+        }
+
+        std::cout << "trained on " << total_num_posts_in_set << " examples" << endl;
+
+        if (debug_in = true) {
+            std::cout << "vocabulary size = " << vocab_size << endl;
+        }   
+      }
     private:
         string training_name;
         string testing_name;
