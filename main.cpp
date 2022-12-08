@@ -1,3 +1,5 @@
+// Project UID db1f506d06d84ab787baf250c265e24e
+
 #include "csvstream.h"
 #include <iostream>
 #include "BinarySearchTree.h"
@@ -41,37 +43,51 @@ class Classifier{
             map<string, string> row;
             csvstream csvin(testing_name, ',', true);
             cout << "test data" << endl;
+            int numcorrect = 0;
+            int numtotal = 0;
             while(csvin >> row){
-                n = stoi(row["n"]);
-                unique_views = stoi(row["unique_views"]);
+                //n = stoi(row["n"]);
+                //unique_views = stoi(row["unique_views"]);
                 tag =  row["tag"];
                 content = row["content"];
                 pair<string, double> pred_temp = prediction(content);
                 //cout << pred_temp.first << pred_temp.second << endl;
-                //cout << "correct = " << tag << ", predicted = " << prediction(content).first << ", log-probability score = " << prediction(content).second << endl;
+                cout << "  correct = " << tag << ", predicted = " << pred_temp.first << ", log-probability score = " << pred_temp.second << endl;
+                cout << "  content = " << content << endl;
+                if( tag == pred_temp.first ){
+                    numcorrect ++;
+                }
+                numtotal ++;
             }
+            cout << "performance: " << numcorrect << " / " << numtotal << " posts predicted correctly" << endl;
         }
         pair<string, double> prediction(string string_in){
             //log_prior, log_likelihood
             //return pair
             pair<string, double> rpair; //return pair (label predicted, score)
-            rpair.second = 0;
-            double temp_score = 0;
+            double temp_score;
             set<string> string_unique = unique_words(string_in);
+            rpair.first = log_prior(*labels_unique.begin()); //initializing rpair.first
+            for (string w: string_unique){ //initializing rpair.second
+                    rpair.second += log_likelihood(rpair.first, w);
+            }
             for (string label: labels_unique){
                 temp_score = log_prior(label);
-                //cout << label << " " << temp_score << endl;
+                //cout << label << " " << temp_score;
                 for (string w: string_unique){
                     temp_score += log_likelihood(label, w);
-                    cout << label << " " << w << " " << log_likelihood(label, w) << endl;
+                    //cout << temp_score;
                 }
                 if(temp_score > rpair.second){
+                    //cout << "condition hit";
                     rpair.first = label;
                     rpair.second = temp_score;
                 }
+                //cout << endl;
                 //cout << " current label tested in prediction " << label << endl;
                 //cout << " current score " << temp_score; 
             }
+            //cout << rpair.first << " " << rpair.second << " ";
             return rpair;
         }
         double log_prior(string c){
@@ -83,19 +99,19 @@ class Classifier{
         double log_likelihood(string c, string w){
             pair<string, string> p = make_pair(c, w);
             if(word_freq_in_set.find(w) == word_freq_in_set.end()){// word does not exist in set
-                cout << " C1 ";
-                return log( 1/total_num_posts_in_set );
+                //cout << " C1 ";
+                return log( 1.0/total_num_posts_in_set );
             }
             if(num_posts_label_contain_word.find(p) == num_posts_label_contain_word.end()){
                 //word does exist in set but not under label C
-                cout << " C2 ";
-                cout << " " << total_num_posts_in_set << " " << log( word_freq_in_set.find(w)->second/total_num_posts_in_set ) << " ";
-                return log( word_freq_in_set.find(w)->second/total_num_posts_in_set );
+                //cout << " C2 ";
+                //cout << " " << double(word_freq_in_set.find(w)->second)/total_num_posts_in_set <<  " " << " " << log( word_freq_in_set.find(w)->second/total_num_posts_in_set ) << " ";
+                return log(double(word_freq_in_set.find(w)->second)/total_num_posts_in_set);
             }
             double num = num_posts_label_contain_word.find(p)->second;
             double denom = label_freq_in_set.find(c)->second;
-            double logl = log(num/denom);
-            cout << " C3 ";
+            double logl = log(double(num)/denom);
+            //cout << " C3 ";
             return logl;
         }
 
@@ -165,8 +181,8 @@ class Classifier{
         map<pair<string, string>, int> num_posts_label_contain_word; //#5 
         string tag;
         string content;
-        int n;
-        int unique_views;
+        //int n;
+        //int unique_views;
 };
 
 set<string> unique_words(const string &str) {
