@@ -1,3 +1,5 @@
+// Project UID db1f506d06d84ab787baf250c265e24e
+
 #ifndef MAP_H
 #define MAP_H
 /* Map.h
@@ -33,13 +35,15 @@ private:
 
   // A custom comparator
   class PairComp {
+    private:
+      Key_compare p;
     public:
-    bool operator() (Pair_type p1, Pair_type p2) const {
-      return compare_key(p1.first, p2.first);
-    }
-  private:
-    Key_compare compare_key;
+      bool operator()(Pair_type pair1, Pair_type pair2) const{
+        return p(pair1.first,pair2.first);
+      } //if pairs are equal, check for values
   };
+
+  BinarySearchTree<Pair_type, PairComp> bst;
 
 public:
 
@@ -64,18 +68,19 @@ public:
   // constructor, and overloaded assignment operator, if appropriate.
   // If these operations will work correctly without defining them,
   // you should omit them. A user of the class must be able to create,
-  // copy, assign, and destroy Maps.
+  // copy, d, and destroy Maps.
+
 
 
   // EFFECTS : Returns whether this Map is empty.
   bool empty() const{
-    return elements.empty();
+    return bst.empty();
   }
 
   // EFFECTS : Returns the number of elements in this Map.
   // NOTE : size_t is an integral type from the STL
   size_t size() const{
-    return elements.size();
+    return bst.size();
   }
 
   // EFFECTS : Searches this Map for an element with a key equivalent
@@ -86,8 +91,8 @@ public:
   //       (key, value) pairs, you'll need to construct a dummy value
   //       using "Value_type()".
   Iterator find(const Key_type& k) const{
-    Pair_type pair = {k, Value_type()};
-    return elements.find(pair);
+    Pair_type pair = make_pair(k, Value_type());
+    return bst.find(pair);
   }
 
   // MODIFIES: this
@@ -107,7 +112,11 @@ public:
   //
   // HINT: http://www.cplusplus.com/reference/map/map/operator[]/
   Value_type& operator[](const Key_type& k){
-    //{k, Value_type()};
+    Pair_type pair = make_pair(k, Value_type());
+    if(bst.find(pair)!=bst.end()){ 
+      return (bst.find(pair))->second; 
+    }
+    return (insert(pair).first)->second;
   }
 
   // MODIFIES: this
@@ -118,21 +127,25 @@ public:
   //           false. Otherwise, inserts the given element and returns
   //           an iterator to the newly inserted element, along with
   //           the value true.
-  std::pair<Iterator, bool> insert(const Pair_type &val);
+  std::pair<Iterator, bool> insert(const Pair_type &val){
+    if(bst.find(val)!=bst.end()){
+      return make_pair(bst.find(val), false);
+    }
+    return make_pair(bst.insert(val), true);
+  }
 
   // EFFECTS : Returns an iterator to the first key-value pair in this Map.
   Iterator begin() const{
-    return elements.min_element();
+    return bst.begin();
   }
 
   // EFFECTS : Returns an iterator to "past-the-end".
   Iterator end() const{
-    return iterator;
+    return bst.end();
   }
 
 private:
-  // Add a BinarySearchTree private member HERE.
-  BinarySearchTree<Pair_type, PairComp> elements;
+  BinarySearchTree<Pair_type, PairComp> map;
 };
 
 // You may implement member functions below using an "out-of-line" definition
@@ -145,5 +158,6 @@ private:
 //    typename Map<K, V, C>::Iterator Map<K, V, C>::begin() const {
 //      // YOUR IMPLEMENTATION GOES HERE
 //    }
+
 
 #endif // DO NOT REMOVE!!!
