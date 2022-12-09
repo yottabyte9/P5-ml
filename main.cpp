@@ -2,8 +2,6 @@
 
 #include "csvstream.h"
 #include <iostream>
-#include "BinarySearchTree.h"
-#include "Map.h"
 #include <string>
 #include <map>
 #include <set>
@@ -32,17 +30,21 @@ class Classifier{
                 cout << "vocabulary size = " << vocab_size << endl << endl;
                 cout << "classes:" << endl;
                 for(pair<string,int> pair_l: label_freq_in_set){
-                    cout << "  " << pair_l.first << ", " << pair_l.second << " examples, log-prior = " << log_prior(pair_l.first) << endl;
+                    cout << "  " << pair_l.first << ", " << pair_l.second 
+                    << " examples, log-prior = " << log_prior(pair_l.first) << endl;
                 }
                 cout << "classifier parameters:" << endl;
                 for(pair<pair<string, string>, int> pair_l: num_posts_label_contain_word){
-                    cout << "  " << pair_l.first.first << ":" << pair_l.first.second << ", count = " << pair_l.second << ", log-likelihood = "<< log_likelihood(pair_l.first.first, pair_l.first.second) << endl;
+                    cout << "  " << pair_l.first.first << ":" << pair_l.first.second << ", count = " 
+                    << pair_l.second << ", log-likelihood = "
+                    << log_likelihood(pair_l.first.first, pair_l.first.second) << endl;
                 }
+                cout << endl;
                 
             }
             map<string, string> row;
             csvstream csvin(testing_name, ',', true);
-            cout << "test data" << endl;
+            cout << "test data:" << endl;
             int numcorrect = 0;
             int numtotal = 0;
             while(csvin >> row){
@@ -52,8 +54,9 @@ class Classifier{
                 content = row["content"];
                 pair<string, double> pred_temp = prediction(content);
                 //cout << pred_temp.first << pred_temp.second << endl;
-                cout << "  correct = " << tag << ", predicted = " << pred_temp.first << ", log-probability score = " << pred_temp.second << endl;
-                cout << "  content = " << content << endl;
+                cout << "  correct = " << tag << ", predicted = " << 
+                pred_temp.first << ", log-probability score = " << pred_temp.second << endl;
+                cout << "  content = " << content << endl << endl;
                 if( tag == pred_temp.first ){
                     numcorrect ++;
                 }
@@ -67,7 +70,8 @@ class Classifier{
             pair<string, double> rpair; //return pair (label predicted, score)
             double temp_score;
             set<string> string_unique = unique_words(string_in);
-            rpair.first = log_prior(*labels_unique.begin()); //initializing rpair.first
+            rpair.first = *labels_unique.begin();
+            rpair.second = log_prior(*labels_unique.begin()); //initializing rpair.first
             for (string w: string_unique){ //initializing rpair.second
                     rpair.second += log_likelihood(rpair.first, w);
             }
@@ -105,7 +109,6 @@ class Classifier{
             if(num_posts_label_contain_word.find(p) == num_posts_label_contain_word.end()){
                 //word does exist in set but not under label C
                 //cout << " C2 ";
-                //cout << " " << double(word_freq_in_set.find(w)->second)/total_num_posts_in_set <<  " " << " " << log( word_freq_in_set.find(w)->second/total_num_posts_in_set ) << " ";
                 return log(double(word_freq_in_set.find(w)->second)/total_num_posts_in_set);
             }
             double num = num_posts_label_contain_word.find(p)->second;
@@ -119,6 +122,9 @@ class Classifier{
         void variables_in_maps(){
             map<string, string> row;
             csvstream csvin(training_name, ',', true);
+            if(debug_in){
+                cout << "training data:" << endl;
+            }
             while(csvin >> row){
                 string tag =  row["tag"];
                 string content = row["content"];
@@ -149,7 +155,8 @@ class Classifier{
                 //number 5
                 set<string> temp_set_string = unique_words(content);
                 for( string unique_string_in_post: temp_set_string ){
-                    if(num_posts_label_contain_word.find(make_pair(tag,unique_string_in_post)) == num_posts_label_contain_word.end()){
+                    if(num_posts_label_contain_word.find(make_pair(tag,unique_string_in_post)) 
+                    == num_posts_label_contain_word.end()){
                         num_posts_label_contain_word.insert(make_pair((make_pair(tag, unique_string_in_post)),1));
                     }
                     else{
@@ -196,9 +203,25 @@ set<string> unique_words(const string &str) {
 }
 
 int main(int argc, char **argv) {
-    if(argc != 3 || argc != 4){
+    if(argc != 3 && argc != 4){
         cout << "Usage: main.exe TRAIN_FILE TEST_FILE [--debug]" << endl;
     }
+
+    ifstream if_stream1(argv[1]);
+    ifstream if_stream2(argv[2]);
+    if(!if_stream1.is_open()){
+        cout << "Error opening file: " << argv[1] << endl;
+        if_stream1.close();
+        return 0;
+    }
+    if(!if_stream2.is_open()){
+        cout << "Error opening file: " << argv[2] << endl;
+        if_stream1.close();
+        return 0;
+    }
+    if_stream1.close();
+    if_stream2.close();
+
     cout.precision(3);
     Classifier my_class = Classifier(argc, argv);
     my_class.variables_in_maps();
