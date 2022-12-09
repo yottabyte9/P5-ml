@@ -152,7 +152,8 @@ class Classifier{
                     }
                 }
                 //number 4
-                if (label_freq_in_set.find(tag) == label_freq_in_set.end()){//if label is not in set
+                if (label_freq_in_set.find(tag) == 
+                label_freq_in_set.end()){//if label is not in set
                     label_freq_in_set.insert(make_pair(tag, 1));
                     labels_unique.insert(labels_unique.begin(), tag);
                 }
