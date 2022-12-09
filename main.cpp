@@ -35,7 +35,8 @@ class Classifier{
                 }
                 cout << "classifier parameters:" << endl;
                 for(pair<pair<string, string>, int> pair_l: num_posts_label_contain_word){
-                    cout << "  " << pair_l.first.first << ":" << pair_l.first.second << ", count = " 
+                    cout << "  " << pair_l.first.first << ":" 
+                    << pair_l.first.second << ", count = " 
                     << pair_l.second << ", log-likelihood = "
                     << log_likelihood(pair_l.first.first, pair_l.first.second) << endl;
                 }
@@ -55,14 +56,16 @@ class Classifier{
                 pair<string, double> pred_temp = prediction(content);
                 //cout << pred_temp.first << pred_temp.second << endl;
                 cout << "  correct = " << tag << ", predicted = " << 
-                pred_temp.first << ", log-probability score = " << pred_temp.second << endl;
+                pred_temp.first << ", log-probability score = " 
+                << pred_temp.second << endl;
                 cout << "  content = " << content << endl << endl;
                 if( tag == pred_temp.first ){
                     numcorrect ++;
                 }
                 numtotal ++;
             }
-            cout << "performance: " << numcorrect << " / " << numtotal << " posts predicted correctly" << endl;
+            cout << "performance: " << numcorrect << " / " << numtotal 
+            << " posts predicted correctly" << endl;
         }
         pair<string, double> prediction(string string_in){
             //log_prior, log_likelihood
@@ -102,14 +105,17 @@ class Classifier{
         }
         double log_likelihood(string c, string w){
             pair<string, string> p = make_pair(c, w);
-            if(word_freq_in_set.find(w) == word_freq_in_set.end()){// word does not exist in set
+            if(word_freq_in_set.find(w) == word_freq_in_set.end()){
+                // word does not exist in set
                 //cout << " C1 ";
                 return log( 1.0/total_num_posts_in_set );
             }
-            if(num_posts_label_contain_word.find(p) == num_posts_label_contain_word.end()){
+            if(num_posts_label_contain_word.find(p) 
+            == num_posts_label_contain_word.end()){
                 //word does exist in set but not under label C
                 //cout << " C2 ";
-                return log(double(word_freq_in_set.find(w)->second)/total_num_posts_in_set);
+                return log(double(word_freq_in_set.find(w)->second)
+                /total_num_posts_in_set);
             }
             double num = num_posts_label_contain_word.find(p)->second;
             double denom = label_freq_in_set.find(c)->second;
@@ -136,7 +142,8 @@ class Classifier{
                 //number 3
                 set<string> content_strings = unique_words(content);
                 for( string s: content_strings ){
-                    if(words_unique.find(s) == words_unique.end()){//if word is not in the set
+                    if(words_unique.find(s) == words_unique.end()){
+                        //if word is not in the set
                         word_freq_in_set.insert(make_pair(s,1));
                         words_unique.insert(words_unique.begin(), s);
                     }
@@ -155,12 +162,15 @@ class Classifier{
                 //number 5
                 set<string> temp_set_string = unique_words(content);
                 for( string unique_string_in_post: temp_set_string ){
-                    if(num_posts_label_contain_word.find(make_pair(tag,unique_string_in_post)) 
+                    if(num_posts_label_contain_word.find
+                    (make_pair(tag,unique_string_in_post)) 
                     == num_posts_label_contain_word.end()){
-                        num_posts_label_contain_word.insert(make_pair((make_pair(tag, unique_string_in_post)),1));
+                        num_posts_label_contain_word.insert
+                        (make_pair((make_pair(tag, unique_string_in_post)),1));
                     }
                     else{
-                        num_posts_label_contain_word.find(make_pair(tag,unique_string_in_post))->second++;
+                        num_posts_label_contain_word.find
+                        (make_pair(tag,unique_string_in_post))->second++;
                     }
                 }
             }
