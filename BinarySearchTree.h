@@ -1,3 +1,5 @@
+// Project UID db1f506d06d84ab787baf250c265e24e
+
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
 /* BinarySearchTree.h
@@ -367,7 +369,8 @@ private:
     if(node == nullptr){
       return nullptr;
     }
-    return new Node(node->datum, copy_nodes_impl(node->left), copy_nodes_impl(node->right));
+    Node * nN = new Node(node->datum, copy_nodes_impl(node->left), copy_nodes_impl(node->right));
+    return nN;
   }
 
   // EFFECTS: Frees the memory for all nodes used in the tree rooted at 'node'.
@@ -378,12 +381,15 @@ private:
     }
     if(node->left != nullptr){
       destroy_nodes_impl(node->left);
+      node->left = nullptr;
+      
     }
     if(node->right != nullptr){
       destroy_nodes_impl(node->right);
+      node->right = nullptr;
     }
     if(node->right == nullptr && node->left == nullptr){
-      node = nullptr;
+      delete node;
     }
   }
 
@@ -487,13 +493,10 @@ private:
     if(node == nullptr){
       return true; //if empty tree, it holds
     }
-    if(node->left != nullptr && less(max_element_impl(node->left)->datum,node->datum)){
-      return true; //if left subtree exists and the max in left subtree is less than root
-    }
-    if(node->right != nullptr && !less(max_element_impl(node->right)->datum,node->datum)){
-      return true; //if left subtree exists and the max in left subtree is more than root
-    }
-    if(check_sorting_invariant_impl(node->left,less) || check_sorting_invariant_impl(node->right,less)){
+    if(node->left != nullptr && !less(max_element_impl(node->left)->datum,node->datum)) return false;
+    if(node->right != nullptr && !less(node->datum, min_element_impl(node->right)->datum)) return false;
+    
+    if(!check_sorting_invariant_impl(node->left,less) || !check_sorting_invariant_impl(node->right,less)){
       return false; //if left or right subtree do not obey invariant then false
     }
     else{
@@ -551,7 +554,7 @@ private:
     if (node->left == nullptr && node->right == nullptr && !less(val, node->datum)){ 
         return nullptr; //if finished the whole thing and there is no answer, return nullptr
     }
-    if ((node->datum > val && node->left == nullptr) || (node->datum > val && !less(val, max_element_impl(node->left)->datum))){
+    if ((less(val, node->datum) && node->left == nullptr) || (less(val, node->datum) && !less(val, max_element_impl(node->left)->datum))){
         return node; //if current node is good and there is nothing on the left to look at, return current node
     }
     if (node->right!=nullptr && !less(val, node->datum)){
