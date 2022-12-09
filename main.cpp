@@ -129,7 +129,7 @@ class Classifier{
                 string tag =  row["tag"];
                 string content = row["content"];
                 if(debug_in){
-                    cout << "label = " << tag << ", content = " << content << endl;
+                    cout << "  label = " << tag << ", content = " << content << endl;
                 }
                 //number 1
                 total_num_posts_in_set++;
