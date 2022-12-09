@@ -23,18 +23,18 @@ TEST(bst_public_test) {
   ASSERT_TRUE(tree.find(5) != tree.end());
   tree.insert(7);
   tree.insert(3);
-
+  //cout << tree.to_string() << endl << endl;
   ASSERT_TRUE(tree.check_sorting_invariant());
   ASSERT_TRUE(*tree.max_element() == 7);
   ASSERT_TRUE(*tree.min_element() == 3);
-  cout << *tree.min_greater_than(5) << endl;
+  //cout << *tree.min_greater_than(5) << endl;
   ASSERT_TRUE(*tree.min_greater_than(5) == 7);
 
-  cout << "cout << tree.to_string()" << endl;
-  cout << tree.to_string() << endl << endl;
+  //cout << "cout << tree.to_string()" << endl;
+  //cout << tree.to_string() << endl << endl;
 
-  cout << "cout << tree" << endl << "(uses iterators)" << endl;
-  cout << tree << endl << endl; 
+  //cout << "cout << tree" << endl << "(uses iterators)" << endl;
+  //cout << tree << endl << endl; 
 
   ostringstream oss_preorder;
   tree.traverse_preorder(oss_preorder);
@@ -52,6 +52,17 @@ TEST(bst_public_test) {
 TEST(test_empty) {
     BinarySearchTree<int> i;
     ASSERT_TRUE(i.empty())
+}
+
+TEST(test_destroy){
+    BinarySearchTree<int> i;
+    i.insert(10);
+    i.insert(5);
+    i.insert(15);
+    i.insert(14);
+    i.insert(13);
+    i.insert(16);
+    i.insert(17);
 }
 
 TEST(test_insert) {
@@ -195,7 +206,7 @@ TEST(test_plus_pre){
 
     ASSERT_TRUE(++*itr == 3);
 }
-/*
+
 TEST(test_breaking){
     BinarySearchTree<int> i;
     i.insert(3);
@@ -203,8 +214,67 @@ TEST(test_breaking){
     BinarySearchTree<int>::Iterator itr = i.begin();
     ++*itr;
     ASSERT_EQUAL(*itr, 3);
-    cout << i.to_string() << endl; 
+    //cout << i.to_string() << endl << endl;
+    ASSERT_FALSE(i.check_sorting_invariant());
+    //cout << i.to_string() << endl; 
+}
 
-}*/
+TEST(test_min){
+    BinarySearchTree<int> i;
+    ASSERT_EQUAL(i.min_element(), i.end());
+    i.insert(10);
+    ASSERT_TRUE(*i.min_element() == 10);
+    i.insert(5);
+    ASSERT_TRUE(*i.min_element() == 5);
+    i.insert(15);
+    ASSERT_TRUE(*i.min_element() == 5);
+    i.insert(9);
+    ASSERT_TRUE(*i.min_element() == 5);
+}
+
+TEST(test_max){
+    BinarySearchTree<int> i;
+    ASSERT_EQUAL(i.max_element(), i.end());
+    i.insert(10);
+    ASSERT_TRUE(*i.max_element() == 10);
+    i.insert(9);
+    ASSERT_TRUE(*i.max_element() == 10);
+    i.insert(15);
+    ASSERT_TRUE(*i.max_element() == 15);
+    i.insert(12);
+    ASSERT_TRUE(*i.max_element() == 15);
+}
+
+TEST(test_invariant){
+    BinarySearchTree<int> i;
+    ASSERT_TRUE(i.check_sorting_invariant());
+    i.insert(4);
+    i.insert(8);
+    i.insert(9);
+    i.insert(7);
+    i.insert(2);
+    i.insert(1);
+    i.insert(3);
+    BinarySearchTree<int>::Iterator itr = i.begin(); // on 1
+    ++*itr;
+    ASSERT_FALSE(i.check_sorting_invariant());
+    --*itr;
+    ASSERT_TRUE(i.check_sorting_invariant());
+    ++itr; //on 2
+    ++itr; //on 3
+    ++itr; //on 4
+    ++itr; //on 7
+    ++*itr; 
+    ASSERT_FALSE(i.check_sorting_invariant());
+    --*itr;
+    ASSERT_TRUE(i.check_sorting_invariant());
+    ++itr;//on 8
+    ++itr;//on 9
+    ++*itr; 
+    cout << i.to_string() << endl << endl;
+    ASSERT_TRUE(i.check_sorting_invariant());
+    --*itr;
+    ASSERT_TRUE(i.check_sorting_invariant());
+}
 
 TEST_MAIN()
