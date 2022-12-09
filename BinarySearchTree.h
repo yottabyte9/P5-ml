@@ -369,7 +369,8 @@ private:
     if(node == nullptr){
       return nullptr;
     }
-    Node * nN = new Node(node->datum, copy_nodes_impl(node->left), copy_nodes_impl(node->right));
+    Node * nN = new Node(node->datum, copy_nodes_impl(node->left), 
+    copy_nodes_impl(node->right));
     return nN;
   }
 
@@ -493,10 +494,13 @@ private:
     if(node == nullptr){
       return true; //if empty tree, it holds
     }
-    if(node->left != nullptr && !less(max_element_impl(node->left)->datum,node->datum)) return false;
-    if(node->right != nullptr && !less(node->datum, min_element_impl(node->right)->datum)) return false;
+    if(node->left != nullptr && 
+    !less(max_element_impl(node->left)->datum,node->datum)) return false;
+    if(node->right != nullptr && 
+    !less(node->datum, min_element_impl(node->right)->datum)) return false;
     
-    if(!check_sorting_invariant_impl(node->left,less) || !check_sorting_invariant_impl(node->right,less)){
+    if(!check_sorting_invariant_impl(node->left,less) || 
+    !check_sorting_invariant_impl(node->right,less)){
       return false; //if left or right subtree do not obey invariant then false
     }
     else{
@@ -551,14 +555,20 @@ private:
     if(node == nullptr){
       return nullptr;//if the tree is empty then return nullptr
     }
-    if (node->left == nullptr && node->right == nullptr && !less(val, node->datum)){ 
-        return nullptr; //if finished the whole thing and there is no answer, return nullptr
+    if (node->left == nullptr && node->right == nullptr 
+    && !less(val, node->datum)){ 
+        return nullptr; 
+        //if finished the whole thing and there is no answer, return nullptr
     }
-    if ((less(val, node->datum) && node->left == nullptr) || (less(val, node->datum) && !less(val, max_element_impl(node->left)->datum))){
-        return node; //if current node is good and there is nothing on the left to look at, return current node
+    if ((less(val, node->datum) && node->left == nullptr) 
+    || (less(val, node->datum) 
+    && !less(val, max_element_impl(node->left)->datum))){
+        return node; //if current node is good and there is nothing on 
+        //the left to look at, return current node
     }
     if (node->right!=nullptr && !less(val, node->datum)){
-        return min_greater_than_impl(node->right, val,less); //if node <= val, then go right for bigger number
+        return min_greater_than_impl(node->right, val,less); 
+        //if node <= val, then go right for bigger number
     }
     else if(node->left!=nullptr){
         return min_greater_than_impl(node->left, val,less); //go left
